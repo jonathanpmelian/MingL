@@ -1,0 +1,25 @@
+services:
+  web:
+    build:
+      context: ./apps/web
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/web:/app
+
+  api:
+    build:
+      context: ./im-in-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./apps/api:/app
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: imindb
+    ports:
+      - "5432:5432"
