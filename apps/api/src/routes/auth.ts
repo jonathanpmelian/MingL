@@ -1,28 +1,39 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
+  const SECRET = process.env.JWT_SECRET;
 
-    const token = "";
-    const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email } });
 
-    res.status(201).json({ message: "Logged in", token });
-  } catch (error) {
+  if (user && SECRET) {
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (validPassword) {
+      const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: "1h" });
+
+      res.status(200).json({ message: "Logged in", token });
+    } else {
+      res.status(400).json({ error: "Invalid credentials" });
+    }
+  } else {
     res.status(400).json({ error: "Invalid credentials" });
   }
 });
 
 router.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+  const saltRounds = parseInt(process.env.SALT_ROUNDS || "10", 10);
+
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
   try {
-    const { name, email, password } = req.body;
-
-    const hashedPassword = "";
-
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword },
     });
