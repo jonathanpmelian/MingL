@@ -2,10 +2,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../utils/db";
 
-const SECRET = process.env.JWT_SECRET || "";
-const saltRounds = parseInt(process.env.SALT_ROUNDS || "10", 10);
-
 export const loginUser = async (email: string, password: string) => {
+  const SECRET = process.env.JWT_SECRET || "";
+
   if (!SECRET) {
     throw new Error("JWT_SECRET is not defined");
   }
@@ -29,6 +28,7 @@ export const registerUser = async (
   email: string,
   password: string
 ) => {
+  const saltRounds = parseInt(process.env.SALT_ROUNDS || "10", 10);
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   const user = await prisma.user.create({
