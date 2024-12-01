@@ -1,12 +1,15 @@
 {
-  "name": "im-in",
+  "name": "mingl",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "test": "turbo test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "docker:dev": "docker compose --profile dev --env-file .env up",
+    "docker:test": "docker compose --profile test --env-file .env.test up",
+    "docker:down": "docker compose down --volumes --remove-orphans"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
