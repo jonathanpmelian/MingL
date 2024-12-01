@@ -9,7 +9,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "docker:dev": "docker compose --profile dev --env-file .env up",
     "docker:test": "docker compose --profile test --env-file .env.test up",
-    "docker:down": "docker compose down --volumes --remove-orphans"
+    "docker:test:up": "docker compose --profile test --env-file .env.test up -d",
+    "docker:down": "docker compose down --volumes --remove-orphans",
+    "cy:open": "npm run docker:test:up && cd apps/web && npx cypress open"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
