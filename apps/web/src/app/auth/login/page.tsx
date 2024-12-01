@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import styles from "./Login.module.scss";
 import Link from "next/link";
 import api from "@/utils/api";
+import { useState } from "react";
 
 type UserCredentials = {
   email: string;
@@ -15,11 +16,18 @@ function LoginPage() {
     register,
     formState: { errors },
   } = useForm<UserCredentials>();
+  const [message, setMessage] = useState("");
 
   const onSubmit: SubmitHandler<UserCredentials> = async (values) => {
-    const token = await api.post("/auth/login", values);
+    try {
+      const response = await api.post("/auth/login", values);
 
-    return token;
+      setMessage("Login Successful!");
+
+      return response;
+    } catch (error: unknown) {
+      console.error(error);
+    }
   };
 
   return (
@@ -56,6 +64,8 @@ function LoginPage() {
         {`Don't you have an account? `}
         <Link href="/auth/register">Signup</Link>
       </span>
+
+      {message && <p>{message}</p>}
     </main>
   );
 }
