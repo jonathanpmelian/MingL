@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import styles from "./Register.module.scss";
 import Link from "next/link";
 import api from "@/utils/api";
+import { useState } from "react";
 
 type RegisterFormData = {
   name: string;
@@ -16,14 +17,16 @@ function RegisterPage() {
     register,
     formState: { errors },
   } = useForm<RegisterFormData>();
+  const [message, setMessage] = useState("");
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (values) => {
     try {
       const response = await api.post("/auth/register", values);
 
+      setMessage("Registration successful!");
       return response;
     } catch (error: unknown) {
-      return error;
+      console.error(error);
     }
   };
 
@@ -67,8 +70,10 @@ function RegisterPage() {
 
       <span>
         {`Have an account? `}
-        <Link href="/auth">Login</Link>
+        <Link href="/auth/login">Login</Link>
       </span>
+
+      {message && <p>{message}</p>}
     </main>
   );
 }
