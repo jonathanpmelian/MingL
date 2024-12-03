@@ -30,7 +30,7 @@ The project aims to rival platforms like Meetup or Preply by providing a fresh, 
 1. **Clone the repository**:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jonathanpmelian/MingL
    cd MingL
    ```
 
