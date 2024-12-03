@@ -3,6 +3,9 @@ const prismaMock = {
     findUnique: jest.fn(),
     create: jest.fn(),
   },
+  event: {
+    create: jest.fn(),
+  },
 };
 
 export default prismaMock;

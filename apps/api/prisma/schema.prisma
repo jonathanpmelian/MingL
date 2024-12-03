@@ -19,7 +19,7 @@ model User {
   password  String   
   createdAt DateTime @default(now())
   name      String
-  events Event[] @relation("userEvents")
+  events    Event[]  @relation("userEvents")
 
   @@map("users")
 }
@@ -29,15 +29,15 @@ enum EventType {
   Offline
 }
 model Event {
-  id Int @id @default(autoincrement())
-  title String 
-  description String
+  id Int                @id @default(autoincrement())
+  title String          @unique
+  description String?
   type EventType 
   location String? // Optional if the event is offline
   date DateTime
-  createdBy Int
-  createdAt DateTime @default(now())
-  user User @relation(fields: [createdBy], references: [id], name: "userEvents")
+  createdAt DateTime    @default(now())
+  user User             @relation(fields: [userId], references: [id], name: "userEvents")
+  userId Int
 
   @@index([date])
   @@map("events")
