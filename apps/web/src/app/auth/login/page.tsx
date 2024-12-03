@@ -20,11 +20,14 @@ function LoginPage() {
 
   const onSubmit: SubmitHandler<UserCredentials> = async (values) => {
     try {
-      const response = await api.post("/auth/login", values);
-
+      const response: { data: { token: string } } = await api.post(
+        "/auth/login",
+        values
+      );
+      console.log(response);
       setMessage("Login Successful!");
 
-      return response;
+      localStorage.setItem("token", response.data.token);
     } catch (error: unknown) {
       console.error(error);
     }

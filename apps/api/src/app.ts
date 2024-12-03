@@ -15,8 +15,8 @@ app.use(
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Welcome to I'm in API!");
+app.get("/health", (req, res) => {
+  res.send("Welcome to MingL API!");
 });
 app.use("/auth", authRoutes);
 app.use(errorHandler);

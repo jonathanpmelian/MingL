@@ -1,0 +1,13 @@
+# Folders
+node_modules
+
+# Env variables
+.env*
+
+# git files
+.gitignore
+.git
+
+# docker files
+.dockerignore
+Dockerfile
