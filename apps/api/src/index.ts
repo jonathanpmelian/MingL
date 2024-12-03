@@ -1,18 +1,11 @@
-import express from "express";
-import authRoutes from "./routes/auth";
-import { errorHandler } from "./middlewares/errorHandler";
+import app from "./app";
+import dotenv from "dotenv";
 
-const app = express();
-app.use(express.json());
+const PORT = process.env.PORT;
 
-app.get("/", (req, res) => {
-  res.send("Welcome to I'm in API!");
-});
-app.use("/auth", authRoutes);
-app.use(errorHandler);
-
-const PORT = 5000;
+const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+dotenv.config({ path: envFile });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.info(`Server is running on http://localhost:${PORT}`);
 });
