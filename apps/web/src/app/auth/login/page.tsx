@@ -24,7 +24,6 @@ function LoginPage() {
         "/auth/login",
         values
       );
-      console.log(response);
       setMessage("Login Successful!");
 
       localStorage.setItem("token", response.data.token);
