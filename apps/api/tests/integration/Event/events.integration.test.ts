@@ -4,7 +4,7 @@ import supertest from "supertest";
 import jwt from "jsonwebtoken";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-describe("POST /events", () => {
+describe("Event integration cases", () => {
   let token: string;
   let date: Date;
   let dateString: string;
@@ -18,55 +18,85 @@ describe("POST /events", () => {
     dateString = date.toISOString();
   });
 
-  test("should create an event", async () => {
-    const eventStub = {
-      title: "New Event",
-      type: "Online",
-      date: date,
-    };
-    prismaMock.event.create.mockResolvedValue(eventStub);
-
-    const response = await supertest(app)
-      .post("/event")
-      .set("Authorization", `Bearer ${token}`)
-      .send(eventStub);
-
-    expect(response.status).toBe(201);
-    expect(response.body).toEqual({
-      message: "Event created",
-      event: {
+  describe("POST /events", () => {
+    test("should create an event", async () => {
+      const eventStub = {
         title: "New Event",
         type: "Online",
-        date: dateString,
-      },
+        date: date,
+      };
+      prismaMock.event.create.mockResolvedValue(eventStub);
+
+      const response = await supertest(app)
+        .post("/event")
+        .set("Authorization", `Bearer ${token}`)
+        .send(eventStub);
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual({
+        message: "Event created",
+        event: {
+          title: "New Event",
+          type: "Online",
+          date: dateString,
+        },
+      });
+    });
+
+    test("should return an error if there is a duplicate event", async () => {
+      const eventStub = {
+        title: "New Event",
+        type: "Online",
+        date: date,
+      };
+      prismaMock.event.create.mockRejectedValue(
+        new PrismaClientKnownRequestError(
+          "Database error occurred with code: P2002",
+          {
+            code: "P2002",
+            clientVersion: "1.0.0",
+          }
+        )
+      );
+
+      const response = await supertest(app)
+        .post("/event")
+        .set("Authorization", `Bearer ${token}`)
+        .send(eventStub);
+
+      expect(response.status).toBe(409);
+      expect(response.body).toHaveProperty(
+        "error",
+        "Conflict: Duplicate value error, a unique constraint was violated"
+      );
     });
   });
 
-  test("should return an error if there is a duplicate event", async () => {
-    const eventStub = {
-      title: "New Event",
-      type: "Online",
-      date: date,
-    };
-    prismaMock.event.create.mockRejectedValue(
-      new PrismaClientKnownRequestError(
-        "Database error occurred with code: P2002",
+  describe("GET /events", () => {
+    test("should return all the events", async () => {
+      const eventStub = [
         {
-          code: "P2002",
-          clientVersion: "1.0.0",
-        }
-      )
-    );
+          id: 1,
+          title: "New Event",
+          type: "Online",
+          date: date,
+        },
+      ];
+      prismaMock.event.findMany.mockResolvedValue(eventStub);
 
-    const response = await supertest(app)
-      .post("/event")
-      .set("Authorization", `Bearer ${token}`)
-      .send(eventStub);
+      const response = await supertest(app)
+        .get("/event")
+        .set("Authorization", `Bearer ${token}`);
 
-    expect(response.status).toBe(409);
-    expect(response.body).toHaveProperty(
-      "error",
-      "Conflict: Duplicate value error, a unique constraint was violated"
-    );
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([
+        {
+          id: 1,
+          title: "New Event",
+          type: "Online",
+          date: dateString,
+        },
+      ]);
+    });
   });
 });
