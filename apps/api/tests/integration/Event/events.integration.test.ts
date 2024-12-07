@@ -18,7 +18,7 @@ describe("Event integration cases", () => {
     dateString = date.toISOString();
   });
 
-  describe("POST /events", () => {
+  describe("POST /event", () => {
     test("should create an event", async () => {
       const eventStub = {
         title: "New Event",
@@ -72,7 +72,7 @@ describe("Event integration cases", () => {
     });
   });
 
-  describe("GET /events", () => {
+  describe("GET /event", () => {
     test("should return all the events", async () => {
       const eventStub = [
         {
@@ -97,6 +97,53 @@ describe("Event integration cases", () => {
           date: dateString,
         },
       ]);
+    });
+  });
+
+  describe("GET /event/:id", () => {
+    test("should return the event", async () => {
+      const eventStub = {
+        id: 1,
+        title: "New Event",
+        type: "Online",
+        date: date,
+      };
+      prismaMock.event.findUnique.mockResolvedValue(eventStub);
+
+      const response = await supertest(app)
+        .get(`/event/${eventStub.id}`)
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        id: 1,
+        title: "New Event",
+        type: "Online",
+        date: dateString,
+      });
+    });
+
+    test("should return an error if the event is not found", async () => {
+      const eventStub = {
+        id: 1,
+        title: "New Event",
+        type: "Online",
+        date: date,
+      };
+      prismaMock.event.findUnique.mockRejectedValue({
+        code: "P2015",
+        message: "Database error occurred with code: P2015",
+      });
+
+      const response = await supertest(app)
+        .get(`/event/${eventStub.id}`)
+        .set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty(
+        "error",
+        "Not Found: The requested record does not exist."
+      );
     });
   });
 });
