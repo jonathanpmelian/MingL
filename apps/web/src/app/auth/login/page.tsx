@@ -4,6 +4,7 @@ import styles from "./Login.module.scss";
 import Link from "next/link";
 import api from "@/utils/api";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type UserCredentials = {
   email: string;
@@ -11,6 +12,7 @@ type UserCredentials = {
 };
 
 function LoginPage() {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -20,15 +22,14 @@ function LoginPage() {
 
   const onSubmit: SubmitHandler<UserCredentials> = async (values) => {
     try {
-      const response: { data: { token: string } } = await api.post(
-        "/auth/login",
-        values
-      );
+      await api.post("/auth/login", values);
+
       setMessage("Login Successful!");
 
-      localStorage.setItem("token", response.data.token);
+      router.push("/events");
     } catch (error: unknown) {
       console.error(error);
+      setMessage("Login failed. Please try again.");
     }
   };
 

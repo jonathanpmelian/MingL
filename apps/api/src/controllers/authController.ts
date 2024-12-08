@@ -11,7 +11,12 @@ export const login = async (
   try {
     const token = await loginUser(email, password);
 
-    res.status(200).json({ message: "Logged in", token });
+    res.setHeader(
+      "Set-Cookie",
+      `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict`
+    );
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     next(error);
   }

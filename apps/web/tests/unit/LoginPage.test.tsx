@@ -1,6 +1,8 @@
 import LoginPage from "@/app/auth/login/page";
 import { render, screen } from "@testing-library/react";
 
+jest.mock("next/navigation");
+
 describe("Login page", () => {
   test("render the login form", () => {
     render(<LoginPage />);

@@ -36,6 +36,7 @@ describe("Auth Routes", () => {
       .send({ email: "test@example.com", password: "password123" });
 
     expect(response.status).toBe(200);
-    expect(response.body.token).toBeDefined();
+    expect(response.headers["set-cookie"]).toBeDefined();
+    expect(response.headers["set-cookie"][0].startsWith("token=")).toBeTruthy();
   });
 });
