@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/auth";
 import eventRoutes from "./routes/event";
+import userRoutes from "./routes/user";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler";
 
@@ -21,6 +22,7 @@ app.get("/health", (req, res) => {
 });
 app.use("/auth", authRoutes);
 app.use("/event", eventRoutes);
+app.use("/user", userRoutes);
 app.use(errorHandler);
 
 export default app;

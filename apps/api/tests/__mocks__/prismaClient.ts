@@ -6,6 +6,7 @@ const prismaMock = {
   event: {
     create: jest.fn(),
     findMany: jest.fn(),
+    findUnique: jest.fn(),
   },
 };
 

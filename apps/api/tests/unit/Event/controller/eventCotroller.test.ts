@@ -1,5 +1,9 @@
-import { create, getAll } from "@/src/controllers/eventController";
-import { createEvent, getAllEvents } from "@/src/services/eventService";
+import { create, getAll, getById } from "@/src/controllers/eventController";
+import {
+  createEvent,
+  getAllEvents,
+  getEventById,
+} from "@/src/services/eventService";
 import { NextFunction, Request, Response } from "express";
 
 jest.mock("@/src/services/eventService");
@@ -11,6 +15,9 @@ describe("Event Controller", () => {
 
   beforeEach(() => {
     mockReq = {
+      params: {
+        id: "1",
+      },
       body: {
         title: "Sample Event",
         description: "This is a test event",
@@ -66,6 +73,41 @@ describe("Event Controller", () => {
       await getAll({} as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("Controller - Get By Id", () => {
+    test("should call getEventById and return 200 status if successful", async () => {
+      (getEventById as jest.Mock).mockResolvedValue(mockReq.body);
+
+      await getById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+      expect(mockRes.json).toHaveBeenCalledWith(mockReq.body);
+    });
+
+    test("should call next() if getEventById throws an error", async () => {
+      const error = new Error("Test error");
+
+      (getEventById as jest.Mock).mockRejectedValue(error);
+
+      await getById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(error);
+    });
+
+    test("should return a status 400 if the ID is not a number", async () => {
+      const mockReqWithBadId: Partial<Request> = {
+        params: { id: "aa" },
+        body: {},
+      };
+
+      await getById(mockReqWithBadId as Request, mockRes as Response, mockNext);
+
+      expect(mockRes.status).toHaveBeenCalledWith(400);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        error: "Invalid event ID format",
+      });
     });
   });
 });

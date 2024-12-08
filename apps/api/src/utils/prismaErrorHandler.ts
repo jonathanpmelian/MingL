@@ -18,7 +18,7 @@ export const handlePrismaError = (err: PrismaError, res: Response) => {
       },
     ],
     [
-      "P2005",
+      "P2015",
       {
         status: HTTP_STATUS.NOT_FOUND,
         message: "Not Found: The requested record does not exist.",
