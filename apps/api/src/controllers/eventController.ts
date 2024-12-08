@@ -4,7 +4,7 @@ import {
   getAllEvents,
   getEventById,
 } from "@/src/services/eventService";
-import { HTTP_STATUS } from "../constants/HTTP_STATUS_CODES";
+import { HTTP_STATUS } from "@/src/constants/HTTP_STATUS_CODES";
 
 export const create = async (
   req: Request,

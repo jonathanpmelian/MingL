@@ -49,6 +49,7 @@ export const getEventById = async (id: number) => {
     const event = await prisma.event.findUnique({ where: { id } });
 
     if (!event) {
+      // ! Provisional until Custom Error codes implementation
       throw {
         code: "P2015",
         message: "Database error occurred with code: P2015",

@@ -25,6 +25,7 @@ export const authenticate = (
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // ! Careful with this assignation, will need future refactor
     req.body.userId = (decoded as { userId: number }).userId;
 
     next();
