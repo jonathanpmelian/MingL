@@ -5,6 +5,12 @@ import Link from "next/link";
 import api from "@/utils/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Mingle - Login",
+  description: "Login with your credentials",
+};
 
 type UserCredentials = {
   email: string;

@@ -2,6 +2,12 @@ import Image from "next/image";
 import style from "./Events.module.scss";
 import Link from "next/link";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "MingL - Events",
+  description: "All events are listed in this page",
+};
 
 const EVENTS = [
   {

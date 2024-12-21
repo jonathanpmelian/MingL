@@ -4,6 +4,12 @@ import styles from "./Register.module.scss";
 import Link from "next/link";
 import api from "@/utils/api";
 import { useState } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Mingle - Create account",
+  description: "Create your account",
+};
 
 type RegisterFormData = {
   name: string;
